@@ -1,12 +1,19 @@
 import unittest
 import random
-from hamcrest import assert_that, string_contains_in_order, all_of, greater_than, less_than, not_, has_item
+from hamcrest import (
+    assert_that,
+    string_contains_in_order,
+    all_of,
+    greater_than,
+    less_than,
+    not_,
+    has_item,
+)
 
 from .. import character
 
 
 class TestCharacter(unittest.TestCase):
-    
     def setUp(self):
         self.random = random.Random(6)
         dm = character.dice_maker(self.random)
@@ -34,25 +41,26 @@ class TestCharacter(unittest.TestCase):
                         effect=dm("2d6"),
                         maximum=10,
                     ),
-                    adjustments=[character.Adjustment(trait="DEX", factor=3, constant=-3)],
+                    adjustments=[
+                        character.Adjustment(trait="DEX", factor=3, constant=-3)
+                    ],
                 ),
             ),
         )
-        
+
     def test_display(self):
-        assert_that(self.some_char._repr_html_(),
-                    string_contains_in_order("Awesome", "STR", "10", "punch"))
-        
+        assert_that(
+            self.some_char._repr_html_(),
+            string_contains_in_order("Awesome", "STR", "10", "punch"),
+        )
+
     def test_roll(self):
         punch = self.some_char.moves.punch
         results = [int(punch) for i in range(10)]
         zeroes = len([0 for x in results if x == 0])
-        assert_that(zeroes,  
-              all_of(greater_than(5), less_than(15)))
+        assert_that(zeroes, all_of(greater_than(5), less_than(15)))
         average = sum(results) / (len(results) - zeroes)
-        assert_that(average,  
-              all_of(greater_than(10), less_than(20)))
-
+        assert_that(average, all_of(greater_than(10), less_than(20)))
 
     def test_roll_with_adjustment(self):
         throw = self.some_char.moves.throw
