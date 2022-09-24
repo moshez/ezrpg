@@ -16,10 +16,10 @@ class _Dice:
     constant: int = attrs.field(default=0)
 
     def __int__(self):
-        ret_value = (
-            sum(self._random.randrange(1, self.value + 1) for i in range(self.num))
-            + self.constant
+        ret_value = sum(
+            self._random.randrange(1, self.value + 1) for i in range(self.num)
         )
+        ret_value += self.constant
         LOGGER.info("Rolled %s, got %s", self, ret_value)
         return ret_value
 
