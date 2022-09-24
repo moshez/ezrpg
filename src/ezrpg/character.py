@@ -17,8 +17,8 @@ class _Dice:
 
     def __int__(self):
         ret_value = (
-            sum(self._random.randrange(1, self.value + 1) for i in range(self.num)) +
-            self.constant
+            sum(self._random.randrange(1, self.value + 1) for i in range(self.num))
+            + self.constant
         )
         LOGGER.info("Rolled %s, got %s", self, ret_value)
         return ret_value
@@ -27,7 +27,7 @@ class _Dice:
 def dice_maker(rnd: random.Random):
     def make_die(desc: str):
         num, value = map(int, desc.split("d"))
-        return _Dice(num=num, value=value, random=rnd) # type: ignore
+        return _Dice(num=num, value=value, random=rnd)  # type: ignore
 
     return make_die
 
@@ -66,7 +66,7 @@ class Threshold:
 
 
 def _empty_move_collection() -> MoveCollection:  # pragma: no cover
-    return MoveCollection(moves={}) # type: ignore
+    return MoveCollection(moves={})  # type: ignore
 
 
 @attrs.frozen
@@ -158,9 +158,9 @@ class MoveCollection:
 
 
 def moves(*args):
-    return MoveCollection( 
+    return MoveCollection(
         moves={a_move.name: a_move for a_move in args},
-    ) # type: ignore
+    )  # type: ignore
 
 
 @attrs.frozen
