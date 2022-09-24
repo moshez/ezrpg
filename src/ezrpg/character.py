@@ -7,6 +7,7 @@ import logging
 
 LOGGER = logging.getLogger(__name__)
 
+
 @attrs.frozen
 class _Dice:
     num: int
@@ -64,7 +65,7 @@ class Threshold:
             return int(self.no_effect)
 
 
-def _empty_move_collection() -> MoveCollection: # pragma: no cover
+def _empty_move_collection() -> MoveCollection:  # pragma: no cover
     return MoveCollection(moves={})
 
 
@@ -139,8 +140,8 @@ class Move:
             constant = threshold.effect.constant
             for effect_adjustment in self.effect_adjustments:
                 constant += effect_adjustment.from_character(character)
-            threshold = attrs.evolve(threshold,
-                effect=attrs.evolve(threshold.effect, constant=constant)
+            threshold = attrs.evolve(
+                threshold, effect=attrs.evolve(threshold.effect, constant=constant)
             )
         return int(threshold)
 
@@ -170,7 +171,7 @@ class _BoundMoveCollection:
     def __getattr__(self, name):
         try:
             the_move = self.collection.moves[name]
-        except KeyError: # pragma: no cover
+        except KeyError:  # pragma: no cover
             raise AttributeError(name)
         else:
             return the_move.from_character(self.character)

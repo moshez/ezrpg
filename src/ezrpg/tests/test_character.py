@@ -33,8 +33,8 @@ class TestCharacter(unittest.TestCase):
                         maximum=10,
                     ),
                     effect_adjustments=[
-                        character.Adjustment(trait="STR", factor=1/5, constant=0),
-                    ]
+                        character.Adjustment(trait="STR", factor=1 / 5, constant=0),
+                    ],
                 ),
                 character.Move(
                     "throw",
@@ -45,7 +45,7 @@ class TestCharacter(unittest.TestCase):
                         maximum=14,
                     ),
                     adjustments=[
-                        character.Adjustment(trait="DEX", factor=1/3, constant=-3)
+                        character.Adjustment(trait="DEX", factor=1 / 3, constant=-3)
                     ],
                 ),
                 character.Move(
@@ -57,10 +57,9 @@ class TestCharacter(unittest.TestCase):
                         minimum=20,
                     ),
                     adjustments=[
-                        character.Adjustment(trait="DEX", factor=1/3, constant=-3)
+                        character.Adjustment(trait="DEX", factor=1 / 3, constant=-3)
                     ],
                 ),
-                    
             ),
         )
 
