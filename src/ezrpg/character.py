@@ -3,7 +3,7 @@ import attrs
 import random
 
 @attrs.frozen
-class Dice:
+class _Dice:
     num: int
     value: int
     _random: random.Random
@@ -14,6 +14,12 @@ class Dice:
             random.randrange(1, self.value + 1)
             for i in range(self.num)
         ) + self.constant
+
+def dice_maker(rnd: random.Random):
+    def make_die(desc: str):
+        num, value = map(int, desc.split("d"))
+        return _Dice(num=num, value=value, random=rnd)
+    return make_die
 
 @attrs.frozen
 class Threshold:
@@ -48,15 +54,46 @@ class Threshold:
             return int(self.no_effect)
             
 
+def _empty_move_collection():
+    return MoveCollection(moves={})
+
 @attrs.frozen
 class Character:
+    name: str
     notes: Mapping[str, str] = attrs.field(factory=dict)
-    _moves: MoveCollection = attrs.field(factory=MoveCollection)
+    _moves: MoveCollection = attrs.field(factory=_empty_move_collection)
     traits: Mapping[str, int] = attrs.field(factory=dict)
     
     @property
     def moves(self):
         return self._moves.__get__(self)
+    
+    def _repr_html_(self):
+        def html_bits():
+            yield "<table>"
+            yield "<tr>"
+            yield "<td>"
+            yield self.name
+            yield "<td>"
+            yield "<tr>"
+            for name, value in self.traits.items():
+                yield "<tr>"
+                yield "<td>"
+                yield name
+                yield "</td>"
+                yield "<td>"
+                yield str(value)
+                yield "</td>"
+                yield "<tr>"
+            for move in self.moves:
+                yield "<tr>"
+                yield "<td>"
+                yield move.name
+                yield "</td>"
+                yield "<tr>"
+            yield "</tr>"
+            yield "<table>"
+        return "".join(html_bits())
     
 @attrs.frozen
 class Adjustment:
@@ -115,6 +152,9 @@ class _BoundMoveCollection:
             raise AttributeError(name)
         else:
             return the_move.__get__(self.character)
+    
+    def __iter__(self):
+        return iter(self.collection.moves.values())
     
 @attrs.frozen
 class _CharacterMove:
