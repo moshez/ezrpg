@@ -11,7 +11,7 @@ class _Dice:
     
     def __int__(self):
         return sum(
-            random.randrange(1, self.value + 1)
+            self._random.randrange(1, self.value + 1)
             for i in range(self.num)
         ) + self.constant
 
