@@ -32,6 +32,9 @@ class TestCharacter(unittest.TestCase):
                         effect=dm("4d6"),
                         maximum=10,
                     ),
+                    effect_adjustments=[
+                        character.Adjustment(trait="STR", factor=1/5, constant=0),
+                    ]
                 ),
                 character.Move(
                     "throw",

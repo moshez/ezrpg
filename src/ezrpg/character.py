@@ -127,17 +127,19 @@ class Move:
     adjustments: Sequence[Adjustment] = attrs.field(factory=list)
     effect_adjustments: Sequence[Adjustment] = attrs.field(factory=list)
 
-    def adjust(self, adjustment):
-        return attrs.evolve(self, adjustments=self.adjustments + [threshold.adjust])
-
     def get_effect(self, character):
         threshold = self.threshold
         for adjustment in self.adjustments:
             threshold = threshold.adjust(
                 adjustment.from_character(character),
             )
-        for effect_adjustment in self.effect_adjustments:
-            threshold.effect.constant += effect_adjustment.from_character(character)
+        if len(self.effect_adjustments) > 0:
+            constant = threshold.effect.constant
+            for effect_adjustment in self.effect_adjustments:
+                constant += effect_adjustment.from_character(character)
+            threshold = attrs.evolve(threshold,
+                effect=attrs.evolve(threshold.effect, constant=constant)
+            )
         return int(threshold)
 
     def __get__(self, instance, owner=None):
