@@ -1,7 +1,9 @@
 from __future__ import annotations
 import attrs
 import random
+import logging
 
+LOGGER = logging.getLogger(__name__)
 
 @attrs.frozen
 class _Dice:
@@ -11,10 +13,12 @@ class _Dice:
     constant: int = attrs.field(default=0)
 
     def __int__(self):
-        return (
+        ret_value = (
             sum(self._random.randrange(1, self.value + 1) for i in range(self.num))
             + self.constant
         )
+        LOGGER.info("Rolled %s, got %s", self, ret_value)
+        return ret_value
 
 
 def dice_maker(rnd: random.Random):

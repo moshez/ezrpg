@@ -39,12 +39,25 @@ class TestCharacter(unittest.TestCase):
                     threshold=character.Threshold(
                         threshold_dice=dm("3d6"),
                         effect=dm("2d6"),
-                        maximum=10,
+                        maximum=14,
                     ),
                     adjustments=[
-                        character.Adjustment(trait="DEX", factor=3, constant=-3)
+                        character.Adjustment(trait="DEX", factor=1/3, constant=-3)
                     ],
                 ),
+                character.Move(
+                    "save",
+                    description="Save yourself",
+                    threshold=character.Threshold(
+                        threshold_dice=dm("3d6"),
+                        effect=1,
+                        minimum=20,
+                    ),
+                    adjustments=[
+                        character.Adjustment(trait="DEX", factor=1/3, constant=-3)
+                    ],
+                ),
+                    
             ),
         )
 
@@ -66,3 +79,8 @@ class TestCharacter(unittest.TestCase):
         throw = self.some_char.moves.throw
         results = [int(throw) for i in range(10)]
         assert_that(results, not_(has_item(0)))
+
+    def test_minimum_roll_with_adjustment(self):
+        save = self.some_char.moves.save
+        results = [int(save) for i in range(10)]
+        assert_that(results, not_(has_item(1)))
