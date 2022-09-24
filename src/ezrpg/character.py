@@ -90,6 +90,9 @@ class Character:
                 yield "<td>"
                 yield move.name
                 yield "</td>"
+                yield "<td>"
+                yield move.description
+                yield "</td>"
                 yield "<tr>"
             yield "</tr>"
             yield "<table>"
