@@ -32,10 +32,10 @@ class Threshold:
     def adjust(self, mod: int) -> Threshold:
         maximum = self.maximum
         if maximum is not None:
-            maximum -= mod
+            maximum += mod
         minimum = self.minimum
         if minimum is not None:
-            minimum += mod
+            minimum -= mod
         
         return attrs.evolve(self, maximum=maximum, minimum=minimum)
                 
@@ -105,7 +105,7 @@ class Adjustment:
     constant: int
     
     def from_character(self, character):
-        return int(character.traits[self.traint] * self.factor) + self.constant
+        return int(character.traits[self.trait] * self.factor) + self.constant
 
 
 @attrs.frozen
@@ -116,6 +116,9 @@ class Move:
     adjustments: Sequence[Adjustment] = attrs.field(factory=list)
     effect_adjustments: Sequence[Adjustment] = attrs.field(factory=list)
     
+    def adjust(self, adjustment):
+        return attrs.evolve(self, adjustments=self.adjustments + [threshold.adjust])
+
     def get_effect(self, character):
         threshold = self.threshold
         for adjustment in self.adjustments:
