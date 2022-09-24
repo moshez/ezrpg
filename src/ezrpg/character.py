@@ -1,4 +1,6 @@
 from __future__ import annotations
+from typing import Mapping, Union, Optional
+
 import attrs
 import random
 import logging
@@ -62,7 +64,7 @@ class Threshold:
             return int(self.no_effect)
 
 
-def _empty_move_collection():
+def _empty_move_collection() -> MoveCollection: # pragma: no cover
     return MoveCollection(moves={})
 
 
@@ -74,8 +76,8 @@ class Character:
     traits: Mapping[str, int] = attrs.field(factory=dict)
 
     @property
-    def moves(self):
-        return self._moves.__get__(self)
+    def moves(self) -> _BoundMoveCollection:
+        return self._moves.from_character(self)
 
     def _repr_html_(self):
         def html_bits():
@@ -142,7 +144,7 @@ class Move:
             )
         return int(threshold)
 
-    def __get__(self, instance, owner=None):
+    def from_character(self, instance):
         return _CharacterMove(character=instance, move=self)
 
 
@@ -150,7 +152,7 @@ class Move:
 class MoveCollection:
     moves: Mapping[str, Move]
 
-    def __get__(self, instance, owner=None):
+    def from_character(self, instance):
         return _BoundMoveCollection(character=instance, collection=self)
 
 
@@ -168,10 +170,10 @@ class _BoundMoveCollection:
     def __getattr__(self, name):
         try:
             the_move = self.collection.moves[name]
-        except KeyError:
+        except KeyError: # pragma: no cover
             raise AttributeError(name)
         else:
-            return the_move.__get__(self.character)
+            return the_move.from_character(self.character)
 
     def __iter__(self):
         return iter(self.collection.moves.values())
