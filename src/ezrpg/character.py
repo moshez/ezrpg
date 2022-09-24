@@ -160,7 +160,7 @@ class MoveCollection:
 def moves(*args):
     return MoveCollection(
         moves={a_move.name: a_move for a_move in args},
-    )  # type: ignore
+    )
 
 
 @attrs.frozen
