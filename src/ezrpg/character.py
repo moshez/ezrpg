@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Mapping, Union, Optional
+from typing import Mapping, Union, Optional, Sequence
 
 import attrs
 import random
@@ -17,8 +17,8 @@ class _Dice:
 
     def __int__(self):
         ret_value = (
-            sum(self._random.randrange(1, self.value + 1) for i in range(self.num))
-            + self.constant
+            sum(self._random.randrange(1, self.value + 1) for i in range(self.num)) +
+            self.constant
         )
         LOGGER.info("Rolled %s, got %s", self, ret_value)
         return ret_value
@@ -27,16 +27,16 @@ class _Dice:
 def dice_maker(rnd: random.Random):
     def make_die(desc: str):
         num, value = map(int, desc.split("d"))
-        return _Dice(num=num, value=value, random=rnd)
+        return _Dice(num=num, value=value, random=rnd) # type: ignore
 
     return make_die
 
 
 @attrs.frozen
 class Threshold:
-    threshold_dice: Dice
-    effect: Union[int, bool, Dice]
-    no_effect: Union[int, bool, Dice] = attrs.field(default=0)
+    threshold_dice: _Dice
+    effect: Union[int, bool, _Dice]
+    no_effect: Union[int, bool, _Dice] = attrs.field(default=0)
     maximum: Optional[int] = attrs.field(default=None)
     minimum: Optional[int] = attrs.field(default=None)
 
@@ -66,7 +66,7 @@ class Threshold:
 
 
 def _empty_move_collection() -> MoveCollection:  # pragma: no cover
-    return MoveCollection(moves={})
+    return MoveCollection(moves={}) # type: ignore
 
 
 @attrs.frozen
@@ -158,9 +158,9 @@ class MoveCollection:
 
 
 def moves(*args):
-    return MoveCollection(
+    return MoveCollection( 
         moves={a_move.name: a_move for a_move in args},
-    )
+    ) # type: ignore
 
 
 @attrs.frozen
