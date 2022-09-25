@@ -36,6 +36,8 @@ class _Dice:
 
 def dice_maker(rnd: random.Random):
     def make_die(desc: str):
+        if "d" not in desc:
+            return int(desc)
         try:
             die, constant = desc.split("+")
         except ValueError:
@@ -135,8 +137,8 @@ class Character:
 @attrs.frozen
 class Adjustment:
     trait: str
-    factor: float
-    constant: int
+    factor: float = attrs.field(default=1)
+    constant: int = attrs.field(default=0)
 
     def from_character(self, character: Character) -> int:
         return int(character.traits[self.trait] * self.factor) + self.constant
