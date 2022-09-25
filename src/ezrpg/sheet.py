@@ -5,12 +5,13 @@ import toml
 
 from . import character
 
+
 def _from_move_data(dice_maker: Callable, move: Mapping[str, Any]) -> character.Move:
     if move["succeed"].startswith("<"):
         maximum, minimum = int(move["succeed"][1:]), None
     elif move["succeed"].startswith(">"):
         maximum, minimum = None, int(move["succeed"][1:])
-    else: # pragma: no cover
+    else:  # pragma: no cover
         raise ValueError("unknown threshold", move)
     effect = move.pop("effect")
     if isinstance(effect, int):
@@ -24,18 +25,26 @@ def _from_move_data(dice_maker: Callable, move: Mapping[str, Any]) -> character.
             maximum=maximum,
             minimum=minimum,
             effect=effect,
-            ),
-        adjustments=[_from_adjustment_data(adjustment) 
-                     for adjustment in move.get("adjustments", [])],
-        effect_adjustments=[_from_adjustment_data(adjustment) 
-                     for adjustment in move.get("effect_adjustments", [])],
+        ),
+        adjustments=[
+            _from_adjustment_data(adjustment)
+            for adjustment in move.get("adjustments", [])
+        ],
+        effect_adjustments=[
+            _from_adjustment_data(adjustment)
+            for adjustment in move.get("effect_adjustments", [])
+        ],
     )
 
-def _from_adjustment_data(adjustment: Mapping[str, Any]) -> character.IntableFromCharacter:
+
+def _from_adjustment_data(
+    adjustment: Mapping[str, Any]
+) -> character.IntableFromCharacter:
     if "trait" in adjustment:
         return character.Adjustment(**adjustment)
     else:
         return character.ConstantAdjustment(**adjustment)
+
 
 def from_toml(dice_maker: Callable, toml_data: str) -> character.Character:
     data = toml.loads(toml_data)

@@ -20,7 +20,10 @@ class TestCharacter(unittest.TestCase):
     def setUp(self):
         self.random = random.Random(6)
         dm = character.dice_maker(self.random)
-        self.some_char = sheet.from_toml(dm, textwrap.dedent("""\
+        self.some_char = sheet.from_toml(
+            dm,
+            textwrap.dedent(
+                """\
         [general]
         name="Awesome Man"
         STR=10
@@ -47,7 +50,9 @@ class TestCharacter(unittest.TestCase):
         [moves.climbing]
         succeed = "<9"
         effect = "1"
-        """))
+        """
+            ),
+        )
 
     def test_roll(self):
         punch = self.some_char.moves.punch
