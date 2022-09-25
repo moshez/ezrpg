@@ -86,3 +86,8 @@ class TestCharacter(unittest.TestCase):
         save = self.some_char.moves.save
         results = [int(save) for i in range(10)]
         assert_that(results, not_(has_item(1)))
+
+    def test_minimum_roll_with_ad_hoc_adjustment(self):
+        save = self.some_char.moves.save.adjust(character.ConstantAdjustment(12))
+        results = [int(save) for i in range(10)]
+        assert_that(results, not_(has_item(0)))

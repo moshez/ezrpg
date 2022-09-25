@@ -1,11 +1,21 @@
 from __future__ import annotations
-from typing import Mapping, Union, Optional, Sequence
+from typing import Mapping, Union, Optional, Sequence, Protocol
 
 import attrs
 import random
 import logging
 
 LOGGER = logging.getLogger(__name__)
+
+class Intable(Protocol):
+    
+    def __int__(self) -> int:
+        "The value/effect"
+
+class IntableFromCharacter(Protocol):
+    
+    def from_character(self, character: Character) -> int:
+        "The value/effect"
 
 
 @attrs.frozen
@@ -26,8 +36,13 @@ class _Dice:
 
 def dice_maker(rnd: random.Random):
     def make_die(desc: str):
+        try:
+            die, constant = desc.split("+")
+        except ValueError:
+            die, constant = desc, "0"
+        the_constant = int(constant)
         num, value = map(int, desc.split("d"))
-        return _Dice(num=num, value=value, random=rnd)  # type: ignore
+        return _Dice(num=num, value=value, constant=the_constant, random=rnd)  # type: ignore
 
     return make_die
 
@@ -118,10 +133,17 @@ class Adjustment:
     factor: float
     constant: int
 
-    def from_character(self, character):
+    def from_character(self, character: Character) -> int:
         return int(character.traits[self.trait] * self.factor) + self.constant
 
+@attrs.frozen
+class ConstantAdjustment:
+    constant: int
 
+    def from_character(self, character: Character) -> int:
+        return self.constant
+
+    
 @attrs.frozen
 class Move:
     name: str
@@ -130,7 +152,7 @@ class Move:
     adjustments: Sequence[Adjustment] = attrs.field(factory=list)
     effect_adjustments: Sequence[Adjustment] = attrs.field(factory=list)
 
-    def get_effect(self, character):
+    def get_effect(self, character: Character) -> int:
         threshold = self.threshold
         for adjustment in self.adjustments:
             threshold = threshold.adjust(
@@ -144,8 +166,14 @@ class Move:
                 threshold, effect=attrs.evolve(threshold.effect, constant=constant)
             )
         return int(threshold)
+    
+    def adjust(self, adjustment: IntableFromCharacter) -> Move:
+        all_adjustments = list(self.adjustments)
+        all_adjustments.append(adjustment)
+        return attrs.evolve(self,
+                adjustments=all_adjustments)
 
-    def from_character(self, instance):
+    def from_character(self, instance: Character) -> Intable:
         return _CharacterMove(character=instance, move=self)
 
 
@@ -185,5 +213,8 @@ class _CharacterMove:
     character: Character
     move: Move
 
+    def adjust(self, adjustment: IntableFromCharacter):
+        return attrs.evolve(self, move=self.move.adjust(adjustment))
+    
     def __int__(self):
         return self.move.get_effect(self.character)
