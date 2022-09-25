@@ -25,6 +25,8 @@ def _from_move_data(dice_maker, move):
             ),
         adjustments=[_from_adjustment_data(adjustment) 
                      for adjustment in move.get("adjustments", [])],
+        effect_adjustments=[_from_adjustment_data(adjustment) 
+                     for adjustment in move.get("effect_adjustments", [])],
     )
 
 def _from_adjustment_data(adjustment):

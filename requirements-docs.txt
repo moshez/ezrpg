@@ -6,6 +6,8 @@
 #
 alabaster==0.7.12
     # via sphinx
+attrs==22.1.0
+    # via ezrpg (pyproject.toml)
 babel==2.10.3
     # via sphinx
 certifi==2022.9.14
@@ -48,5 +50,7 @@ sphinxcontrib-qthelp==1.0.3
     # via sphinx
 sphinxcontrib-serializinghtml==1.1.5
     # via sphinx
+toml==0.10.2
+    # via ezrpg (pyproject.toml)
 urllib3==1.26.12
     # via requests
