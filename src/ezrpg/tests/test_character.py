@@ -8,6 +8,7 @@ from hamcrest import (
     less_than,
     not_,
     has_item,
+    equal_to,
 )
 
 from .. import character
@@ -49,6 +50,16 @@ class TestCharacter(unittest.TestCase):
                     ],
                 ),
                 character.Move(
+                    "push",
+                    threshold=character.Threshold(
+                        threshold_dice=dm("3d6"),
+                        effect=0,
+                    ),
+                    effect_adjustments=[
+                        character.Adjustment(trait="STR", factor=1 / 5, constant=0)
+                    ],
+                ),
+                character.Move(
                     "save",
                     description="Save yourself",
                     threshold=character.Threshold(
@@ -76,6 +87,9 @@ class TestCharacter(unittest.TestCase):
         assert_that(zeroes, all_of(greater_than(5), less_than(15)))
         average = sum(results) / (len(results) - zeroes)
         assert_that(average, all_of(greater_than(10), less_than(20)))
+
+    def test_constant_effect_adjustment(self):
+        assert_that(int(self.some_char.moves.push), equal_to(2))
 
     def test_roll_with_adjustment(self):
         throw = self.some_char.moves.throw
