@@ -7,13 +7,13 @@ import logging
 
 LOGGER = logging.getLogger(__name__)
 
+
 class Intable(Protocol):
-    
     def __int__(self) -> int:
         "The value/effect"
 
+
 class IntableFromCharacter(Protocol):
-    
     def from_character(self, character: Character) -> int:
         "The value/effect"
 
@@ -136,6 +136,7 @@ class Adjustment:
     def from_character(self, character: Character) -> int:
         return int(character.traits[self.trait] * self.factor) + self.constant
 
+
 @attrs.frozen
 class ConstantAdjustment:
     constant: int
@@ -143,7 +144,7 @@ class ConstantAdjustment:
     def from_character(self, character: Character) -> int:
         return self.constant
 
-    
+
 @attrs.frozen
 class Move:
     name: str
@@ -166,12 +167,11 @@ class Move:
                 threshold, effect=attrs.evolve(threshold.effect, constant=constant)
             )
         return int(threshold)
-    
+
     def adjust(self, adjustment: IntableFromCharacter) -> Move:
         all_adjustments = list(self.adjustments)
         all_adjustments.append(adjustment)
-        return attrs.evolve(self,
-                adjustments=all_adjustments)
+        return attrs.evolve(self, adjustments=all_adjustments)
 
     def from_character(self, instance: Character) -> Intable:
         return _CharacterMove(character=instance, move=self)
@@ -215,6 +215,6 @@ class _CharacterMove:
 
     def adjust(self, adjustment: IntableFromCharacter):
         return attrs.evolve(self, move=self.move.adjust(adjustment))
-    
+
     def __int__(self):
         return self.move.get_effect(self.character)
