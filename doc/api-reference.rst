@@ -1,5 +1,8 @@
 API Reference
 =============
 
-.. automodule:: ezrpg
+.. automodule:: ezrpg.character
+   :members:
+   
+.. automodule:: ezrpg.sheet
    :members:

@@ -9,11 +9,20 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Intable(Protocol):
+    """
+    Something convertable to an int.
+    
+    The EZ-RPG system converts to int representing
+    "effect size".
+    """
     def __int__(self) -> int:
         "The value/effect"
 
 
 class IntableFromCharacter(Protocol):
+    """
+    Something creating an int from a character
+    """
     def from_character(self, character: Character) -> int:
         "The value/effect"
 
@@ -35,6 +44,15 @@ class _Dice:
 
 
 def dice_maker(rnd: random.Random):
+    """
+    Create dice representing things like 4d6+2
+    
+    Args:
+        rnd: The source of randomness
+        
+    Returns:
+        A function converting die description to intable things.
+    """ 
     def make_die(desc: Union[str, int]) -> Union[int, _Dice]:
         if isinstance(desc, int):
             return desc
@@ -58,6 +76,10 @@ def dice_maker(rnd: random.Random):
 
 @attrs.frozen
 class Threshold:
+    """
+    Different effects based on thresholds
+    """
+    
     threshold_dice: _Dice
     effect: Union[int, bool, _Dice]
     no_effect: Union[int, bool, _Dice] = attrs.field(default=0)
@@ -83,6 +105,7 @@ class Threshold:
                 succeeded_by = min(self.maximum - success_roll, succeeded_by)
             if self.minimum is not None:
                 succeeded_by = min(success_roll - self.minimum, succeeded_by)
+            LOGGER.info("Succeeded by %s", succeeded_by)
             if succeeded_by < 0:
                 return self.no_effect
             special_success = [
@@ -102,6 +125,9 @@ def _empty_move_collection() -> MoveCollection:  # pragma: no cover
 
 @attrs.frozen
 class Character:
+    """
+    An RPG character
+    """
     name: str
     notes: Mapping[str, str] = attrs.field(factory=dict)
     _moves: MoveCollection = attrs.field(factory=_empty_move_collection)
@@ -185,6 +211,7 @@ class Move:
             threshold = attrs.evolve(
                 threshold, effect=attrs.evolve(effect, constant=constant)
             )
+        LOGGER.info("Adjusted threshold: %s", threshold)
         return int(threshold)
 
     def adjust(self, adjustment: IntableFromCharacter) -> Move:
