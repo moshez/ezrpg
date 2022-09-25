@@ -35,7 +35,9 @@ class _Dice:
 
 
 def dice_maker(rnd: random.Random):
-    def make_die(desc: str):
+    def make_die(desc: Union[str, int]) -> Union[int, _Dice]:
+        if isinstance(desc, int):
+            return desc
         if "d" not in desc:
             return int(desc)
         try:
@@ -59,6 +61,7 @@ class Threshold:
     threshold_dice: _Dice
     effect: Union[int, bool, _Dice]
     no_effect: Union[int, bool, _Dice] = attrs.field(default=0)
+    bonus_effect: Mapping[int, Union[int, bool, _Dice]] = attrs.field(factory=dict)
     maximum: Optional[int] = attrs.field(default=None)
     minimum: Optional[int] = attrs.field(default=None)
 
@@ -73,18 +76,24 @@ class Threshold:
         return attrs.evolve(self, maximum=maximum, minimum=minimum)
 
     def __int__(self):
-        def success():
+        def get_effect():
             success_roll = int(self.threshold_dice)
-            if self.maximum is not None and success_roll > self.maximum:
-                return False
-            if self.minimum is not None and success_roll < self.minimum:
-                return False
-            return True
-
-        if success():
-            return int(self.effect)
-        else:
-            return int(self.no_effect)
+            succeeded_by = 10
+            if self.maximum is not None:
+                succeeded_by = min(self.maximum - success_roll, succeeded_by)
+            if self.minimum is not None:
+                succeeded_by = min(success_roll - self.minimum, succeeded_by)
+            if succeeded_by < 0:
+                return self.no_effect
+            special_success = [
+                level
+                for level in self.bonus_effect
+                if level <= succeeded_by
+            ]
+            if len(special_success) > 0:
+                return self.bonus_effect[max(special_success)]
+            return self.effect
+        return int(get_effect())
 
 
 def _empty_move_collection() -> MoveCollection:  # pragma: no cover

@@ -18,6 +18,7 @@ def _from_move_data(dice_maker: Callable, move: Mapping[str, Any]) -> character.
         effect = effect
     else:
         effect = dice_maker(effect)
+    bonus_effect = move.get("bonus_effect", [])
     return character.Move(
         name=move["name"],
         threshold=character.Threshold(
@@ -25,6 +26,10 @@ def _from_move_data(dice_maker: Callable, move: Mapping[str, Any]) -> character.
             maximum=maximum,
             minimum=minimum,
             effect=effect,
+            bonus_effect={
+                an_effect["level"]: dice_maker(an_effect["value"])
+                for an_effect in bonus_effect
+            },
         ),
         adjustments=[
             _from_adjustment_data(adjustment)
