@@ -41,8 +41,13 @@ def dice_maker(rnd: random.Random):
         except ValueError:
             die, constant = desc, "0"
         the_constant = int(constant)
-        num, value = map(int, desc.split("d"))
-        return _Dice(num=num, value=value, constant=the_constant, random=rnd)  # type: ignore
+        num, value = map(int, die.split("d"))
+        return _Dice(
+            num=num,
+            value=value,
+            constant=the_constant,
+            random=rnd,
+        )  # type: ignore
 
     return make_die
 
@@ -150,8 +155,8 @@ class Move:
     name: str
     threshold: Threshold
     description: str = attrs.field(default="")
-    adjustments: Sequence[Adjustment] = attrs.field(factory=list)
-    effect_adjustments: Sequence[Adjustment] = attrs.field(factory=list)
+    adjustments: Sequence[IntableFromCharacter] = attrs.field(factory=list)
+    effect_adjustments: Sequence[IntableFromCharacter] = attrs.field(factory=list)
 
     def get_effect(self, character: Character) -> int:
         threshold = self.threshold
@@ -160,11 +165,14 @@ class Move:
                 adjustment.from_character(character),
             )
         if len(self.effect_adjustments) > 0:
-            constant = threshold.effect.constant
+            effect = threshold.effect
+            if isinstance(effect, int):
+                effect = _Dice(0, 6, random.Random(), effect)  # type: ignore
+            constant = effect.constant
             for effect_adjustment in self.effect_adjustments:
                 constant += effect_adjustment.from_character(character)
             threshold = attrs.evolve(
-                threshold, effect=attrs.evolve(threshold.effect, constant=constant)
+                threshold, effect=attrs.evolve(effect, constant=constant)
             )
         return int(threshold)
 
@@ -174,7 +182,7 @@ class Move:
         return attrs.evolve(self, adjustments=all_adjustments)
 
     def from_character(self, instance: Character) -> Intable:
-        return _CharacterMove(character=instance, move=self)
+        return _CharacterMove(character=instance, move=self)  # type: ignore
 
 
 @attrs.frozen
