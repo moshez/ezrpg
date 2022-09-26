@@ -20,7 +20,7 @@ class TestCharacter(unittest.TestCase):
     def setUp(self):
         self.random = random.Random(6)
         self.dm = character.dice_maker(self.random)
-        
+
     def test_roll(self):
         some_char = sheet.from_toml(
             self.dm,
@@ -62,7 +62,7 @@ class TestCharacter(unittest.TestCase):
         assert_that(zeroes, all_of(greater_than(5), less_than(15)))
         average = sum(results) / (len(results) - zeroes)
         assert_that(average, all_of(greater_than(10), less_than(20)))
-        
+
     def test_bonus_effect(self):
         some_char = sheet.from_toml(
             self.dm,
@@ -92,6 +92,7 @@ class TestCharacter(unittest.TestCase):
 
                 [[moves.lore_arcane.adjustments]]
                 trait = "Arcane_Lore"
-                """))
+                """
+            ),
+        )
         assert_that(int(some_char.moves.lore_arcane), equal_to(3))
-        

@@ -55,11 +55,11 @@ def _from_adjustment_data(
 def from_toml(dice_maker: Callable, toml_data: str) -> character.Character:
     """
     Create a character from a properly formatted TOML character sheet.
-    
+
     Args:
         dice_maker: Dice creator, encoding a source of randomness.
         toml_data: The raw data of the TOML contents.
-        
+
     Returns:
         A character object
     """
