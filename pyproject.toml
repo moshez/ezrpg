@@ -10,12 +10,13 @@ version = "2022.3.6.2"
 description = "Make it slightly easier to run RPG games with Python"
 readme = "README.rst"
 authors = [{name = "Moshe Zadka", email = "moshez@zadka.club"}]
+dependencies=["attrs", "toml"]
 
 [project.optional-dependencies]
 tests = ["virtue", "pyhamcrest", "coverage"]
 mypy = ["mypy"]
 lint = ["flake8", "black"]
-docs = ["sphinx"]
+docs = ["sphinx", "nbsphinx", "ipython"]
 
 [project.license]
 text = """

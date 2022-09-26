@@ -7,6 +7,7 @@
 attrs==22.1.0
     # via
     #   automat
+    #   ezrpg (pyproject.toml)
     #   twisted
     #   virtue
 automat==20.2.0
@@ -31,6 +32,8 @@ pyrsistent==0.18.1
     # via virtue
 six==1.16.0
     # via automat
+toml==0.10.2
+    # via ezrpg (pyproject.toml)
 twisted==22.8.0
     # via virtue
 typing-extensions==4.3.0

@@ -1,5 +1,5 @@
 ezrpg
-================
+=====
 
 
 Make it slightly easier to run RPG games with Python

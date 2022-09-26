@@ -9,11 +9,22 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Intable(Protocol):
+    """
+    Something convertable to an int.
+
+    The EZ-RPG system converts to int representing
+    "effect size".
+    """
+
     def __int__(self) -> int:
         "The value/effect"
 
 
 class IntableFromCharacter(Protocol):
+    """
+    Something creating an int from a character
+    """
+
     def from_character(self, character: Character) -> int:
         "The value/effect"
 
@@ -35,7 +46,21 @@ class _Dice:
 
 
 def dice_maker(rnd: random.Random):
-    def make_die(desc: str):
+    """
+    Create dice representing things like 4d6+2
+
+    Args:
+        rnd: The source of randomness
+
+    Returns:
+        A function converting die description to intable things.
+    """
+
+    def make_die(desc: Union[str, int]) -> Union[int, _Dice]:
+        if isinstance(desc, int):
+            return desc
+        if "d" not in desc:
+            return int(desc)
         try:
             die, constant = desc.split("+")
         except ValueError:
@@ -47,16 +72,21 @@ def dice_maker(rnd: random.Random):
             value=value,
             constant=the_constant,
             random=rnd,
-        )  # type: ignore
+        )
 
     return make_die
 
 
 @attrs.frozen
 class Threshold:
+    """
+    Different effects based on thresholds
+    """
+
     threshold_dice: _Dice
     effect: Union[int, bool, _Dice]
     no_effect: Union[int, bool, _Dice] = attrs.field(default=0)
+    bonus_effect: Mapping[int, Union[int, bool, _Dice]] = attrs.field(factory=dict)
     maximum: Optional[int] = attrs.field(default=None)
     minimum: Optional[int] = attrs.field(default=None)
 
@@ -71,26 +101,36 @@ class Threshold:
         return attrs.evolve(self, maximum=maximum, minimum=minimum)
 
     def __int__(self):
-        def success():
+        def get_effect():
             success_roll = int(self.threshold_dice)
-            if self.maximum is not None and success_roll > self.maximum:
-                return False
-            if self.minimum is not None and success_roll < self.minimum:
-                return False
-            return True
+            succeeded_by = 10
+            if self.maximum is not None:
+                succeeded_by = min(self.maximum - success_roll, succeeded_by)
+            if self.minimum is not None:
+                succeeded_by = min(success_roll - self.minimum, succeeded_by)
+            LOGGER.info("Succeeded by %s", succeeded_by)
+            if succeeded_by < 0:
+                return self.no_effect
+            special_success = [
+                level for level in self.bonus_effect if level <= succeeded_by
+            ]
+            if len(special_success) > 0:
+                return self.bonus_effect[max(special_success)]
+            return self.effect
 
-        if success():
-            return int(self.effect)
-        else:
-            return int(self.no_effect)
+        return int(get_effect())
 
 
 def _empty_move_collection() -> MoveCollection:  # pragma: no cover
-    return MoveCollection(moves={})  # type: ignore
+    return MoveCollection(moves={})
 
 
 @attrs.frozen
 class Character:
+    """
+    An RPG character
+    """
+
     name: str
     notes: Mapping[str, str] = attrs.field(factory=dict)
     _moves: MoveCollection = attrs.field(factory=_empty_move_collection)
@@ -135,8 +175,8 @@ class Character:
 @attrs.frozen
 class Adjustment:
     trait: str
-    factor: float
-    constant: int
+    factor: float = attrs.field(default=1)
+    constant: int = attrs.field(default=0)
 
     def from_character(self, character: Character) -> int:
         return int(character.traits[self.trait] * self.factor) + self.constant
@@ -167,13 +207,14 @@ class Move:
         if len(self.effect_adjustments) > 0:
             effect = threshold.effect
             if isinstance(effect, int):
-                effect = _Dice(0, 6, random.Random(), effect)  # type: ignore
+                effect = _Dice(0, 6, random.Random(), effect)
             constant = effect.constant
             for effect_adjustment in self.effect_adjustments:
                 constant += effect_adjustment.from_character(character)
             threshold = attrs.evolve(
                 threshold, effect=attrs.evolve(effect, constant=constant)
             )
+        LOGGER.info("Adjusted threshold: %s", threshold)
         return int(threshold)
 
     def adjust(self, adjustment: IntableFromCharacter) -> Move:
@@ -182,7 +223,7 @@ class Move:
         return attrs.evolve(self, adjustments=all_adjustments)
 
     def from_character(self, instance: Character) -> Intable:
-        return _CharacterMove(character=instance, move=self)  # type: ignore
+        return _CharacterMove(character=instance, move=self)
 
 
 @attrs.frozen

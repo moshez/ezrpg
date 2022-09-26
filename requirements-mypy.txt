@@ -4,10 +4,14 @@
 #
 #    pip-compile --extra=mypy --output-file=requirements-mypy.txt pyproject.toml
 #
+attrs==22.1.0
+    # via ezrpg (pyproject.toml)
 mypy==0.971
     # via ezrpg (pyproject.toml)
 mypy-extensions==0.4.3
     # via mypy
+toml==0.10.2
+    # via ezrpg (pyproject.toml)
 tomli==2.0.1
     # via mypy
 typing-extensions==4.3.0
