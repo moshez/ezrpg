@@ -4,12 +4,9 @@ import textwrap
 
 from hamcrest import (
     assert_that,
-    string_contains_in_order,
     all_of,
     greater_than,
     less_than,
-    not_,
-    has_item,
     equal_to,
 )
 
@@ -30,25 +27,25 @@ class TestCharacter(unittest.TestCase):
         name="Awesome Man"
         STR=10
         DEX=20
-        
+
         [moves.default]
         roll="3d6"
         effect=true
-        
+
         [moves.punch]
         effect = "4d6"
         succeed = "<10"
-        
+
         [[moves.punch.effect_adjustments]]
         trait = "STR"
         factor = 0.2
 
         [moves.save]
         succeed = ">9"
-        
+
         [[moves.save.adjustments]]
         constant = 1
-        
+
         [moves.climbing]
         succeed = "<9"
         effect = "1"
@@ -80,15 +77,14 @@ class TestCharacter(unittest.TestCase):
                 roll="4d3"
                 succeed=">4"
                 effect=1
-                
+
                 [[moves.default.bonus_effect]]
                 level = 1
                 value = 2
-                
+
                 [[moves.default.bonus_effect]]
                 level = 3
                 value = 3
-                
 
                 [[moves.lore_arcane.adjustments]]
                 trait = "Arcane_Lore"
