@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from typing import Mapping, Callable, Any, Dict
 import functools
 import toml
 
 from . import character
 
 
-def _from_move_data(dice_maker: Callable, move: Mapping[str, Any]) -> character.Move:
+def _from_move_data(dice_maker: Callable, move: Dict[str, Any]) -> character.Move:
     if move["succeed"].startswith("<"):
         maximum, minimum = int(move["succeed"][1:]), None
     elif move["succeed"].startswith(">"):

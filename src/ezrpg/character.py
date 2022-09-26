@@ -69,7 +69,7 @@ def dice_maker(rnd: random.Random):
             value=value,
             constant=the_constant,
             random=rnd,
-        )  # type: ignore
+        )
 
     return make_die
 
@@ -120,7 +120,7 @@ class Threshold:
 
 
 def _empty_move_collection() -> MoveCollection:  # pragma: no cover
-    return MoveCollection(moves={})  # type: ignore
+    return MoveCollection(moves={})
 
 
 @attrs.frozen
@@ -204,7 +204,7 @@ class Move:
         if len(self.effect_adjustments) > 0:
             effect = threshold.effect
             if isinstance(effect, int):
-                effect = _Dice(0, 6, random.Random(), effect)  # type: ignore
+                effect = _Dice(0, 6, random.Random(), effect)
             constant = effect.constant
             for effect_adjustment in self.effect_adjustments:
                 constant += effect_adjustment.from_character(character)
@@ -220,7 +220,7 @@ class Move:
         return attrs.evolve(self, adjustments=all_adjustments)
 
     def from_character(self, instance: Character) -> Intable:
-        return _CharacterMove(character=instance, move=self)  # type: ignore
+        return _CharacterMove(character=instance, move=self)
 
 
 @attrs.frozen

@@ -61,6 +61,8 @@ def mypy(session):
         "mypy",
         "--warn-unused-ignores",
         "--ignore-missing-imports",
+        "--install-types",
+        "--non-interactive",
         "src/",
     )
 
