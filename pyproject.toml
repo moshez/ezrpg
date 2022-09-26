@@ -1,12 +1,21 @@
 [build-system]
 requires = [
-    "setuptools"
+    "setuptools", "autocalver",
 ]
 build-backend = "setuptools.build_meta"
 
+
+[tool.autocalver]
+use = true
+log = "git-log-head"
+log_command = "git log -n 1 --date=iso"
+is_main_var = "BUILD_BRANCH_REF"
+is_main_match = ".*/trunk$"
+
+
 [project]
 name = "ezrpg"
-version = "2022.3.6.2"
+dynamic = ["version"]
 description = "Make it slightly easier to run RPG games with Python"
 readme = "README.rst"
 authors = [{name = "Moshe Zadka", email = "moshez@zadka.club"}]
