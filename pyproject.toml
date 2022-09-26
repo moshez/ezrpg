@@ -16,7 +16,7 @@ dependencies=["attrs", "toml"]
 tests = ["virtue", "pyhamcrest", "coverage"]
 mypy = ["mypy"]
 lint = ["flake8", "black"]
-docs = ["sphinx", "nbsphinx"]
+docs = ["sphinx", "nbsphinx", "ipython"]
 
 [project.license]
 text = """

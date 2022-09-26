@@ -6,12 +6,16 @@
 #
 alabaster==0.7.12
     # via sphinx
+asttokens==2.0.8
+    # via stack-data
 attrs==22.1.0
     # via
     #   ezrpg (pyproject.toml)
     #   jsonschema
 babel==2.10.3
     # via sphinx
+backcall==0.2.0
+    # via ipython
 beautifulsoup4==4.11.1
     # via nbconvert
 bleach==5.0.1
@@ -20,6 +24,8 @@ certifi==2022.9.14
     # via requests
 charset-normalizer==2.1.1
     # via requests
+decorator==5.1.1
+    # via ipython
 defusedxml==0.7.1
     # via nbconvert
 docutils==0.19
@@ -28,12 +34,18 @@ docutils==0.19
     #   sphinx
 entrypoints==0.4
     # via jupyter-client
+executing==1.1.0
+    # via stack-data
 fastjsonschema==2.16.2
     # via nbformat
 idna==3.4
     # via requests
 imagesize==1.4.1
     # via sphinx
+ipython==8.5.0
+    # via ezrpg (pyproject.toml)
+jedi==0.18.1
+    # via ipython
 jinja2==3.1.2
     # via
     #   nbconvert
@@ -56,6 +68,8 @@ markupsafe==2.1.1
     # via
     #   jinja2
     #   nbconvert
+matplotlib-inline==0.1.6
+    # via ipython
 mistune==2.0.4
     # via nbconvert
 nbclient==0.6.8
@@ -79,8 +93,21 @@ packaging==21.3
     #   sphinx
 pandocfilters==1.5.0
     # via nbconvert
+parso==0.8.3
+    # via jedi
+pexpect==4.8.0
+    # via ipython
+pickleshare==0.7.5
+    # via ipython
+prompt-toolkit==3.0.31
+    # via ipython
+ptyprocess==0.7.0
+    # via pexpect
+pure-eval==0.2.2
+    # via stack-data
 pygments==2.13.0
     # via
+    #   ipython
     #   nbconvert
     #   sphinx
 pyparsing==3.0.9
@@ -97,6 +124,7 @@ requests==2.28.1
     # via sphinx
 six==1.16.0
     # via
+    #   asttokens
     #   bleach
     #   python-dateutil
 snowballstemmer==2.2.0
@@ -119,6 +147,8 @@ sphinxcontrib-qthelp==1.0.3
     # via sphinx
 sphinxcontrib-serializinghtml==1.1.5
     # via sphinx
+stack-data==0.5.1
+    # via ipython
 tinycss2==1.1.1
     # via nbconvert
 toml==0.10.2
@@ -127,14 +157,18 @@ tornado==6.2
     # via jupyter-client
 traitlets==5.4.0
     # via
+    #   ipython
     #   jupyter-client
     #   jupyter-core
+    #   matplotlib-inline
     #   nbclient
     #   nbconvert
     #   nbformat
     #   nbsphinx
 urllib3==1.26.12
     # via requests
+wcwidth==0.2.5
+    # via prompt-toolkit
 webencodings==0.5.1
     # via
     #   bleach
