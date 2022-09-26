@@ -22,7 +22,7 @@ jobs:
         
       - name: Set up pandoc
         run: |
-          apt-get install -y pandoc
+          sudo apt-get install -y pandoc
 
       - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v4.0.0
