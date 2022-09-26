@@ -19,6 +19,10 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3.0.2
+        
+      - name: Set up pandoc
+        run: |
+          apt-get install -y pandoc
 
       - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v4.0.0
