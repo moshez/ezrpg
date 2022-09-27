@@ -132,7 +132,7 @@ class Character:
     """
 
     name: str
-    notes: Mapping[str, str] = attrs.field(factory=dict)
+    notes: Sequence[str] = attrs.field(factory=list)
     _moves: MoveCollection = attrs.field(factory=_empty_move_collection)
     traits: Mapping[str, int] = attrs.field(factory=dict)
 
@@ -144,10 +144,15 @@ class Character:
         def html_bits():
             yield "<table>"
             yield "<tr>"
-            yield "<td>"
+            yield "<th>"
             yield self.name
-            yield "<td>"
+            yield "<th>"
+            yield "</tr>"
             yield "<tr>"
+            yield "<th>"
+            yield "Traits"
+            yield "<th>"
+            yield "</tr>"
             for name, value in self.traits.items():
                 yield "<tr>"
                 yield "<td>"
@@ -156,7 +161,12 @@ class Character:
                 yield "<td>"
                 yield str(value)
                 yield "</td>"
-                yield "<tr>"
+                yield "</tr>"
+            yield "<tr>"
+            yield "<th>"
+            yield "Moves"
+            yield "</th>"
+            yield "</tr>"
             for move in self.moves:
                 yield "<tr>"
                 yield "<td>"
@@ -164,6 +174,17 @@ class Character:
                 yield "</td>"
                 yield "<td>"
                 yield move.description
+                yield "</td>"
+                yield "<tr>"
+            yield "<tr>"
+            yield "<th>"
+            yield "Notes"
+            yield "</th>"
+            yield "</tr>"
+            for note in self.notes:
+                yield "<tr>"
+                yield "<td>"
+                yield note
                 yield "</td>"
                 yield "<tr>"
             yield "</tr>"

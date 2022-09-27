@@ -8,6 +8,7 @@ from hamcrest import (
     greater_than,
     less_than,
     equal_to,
+    string_contains_in_order,
 )
 
 from .. import character, sheet
@@ -92,3 +93,40 @@ class TestCharacter(unittest.TestCase):
             ),
         )
         assert_that(int(some_char.moves.lore_arcane), equal_to(3))
+
+    def test_notes(self):
+        some_char = sheet.from_toml(
+            self.dm,
+            textwrap.dedent(
+                '''\
+                [general]
+                name = "Example Character"
+
+                [moves.default]
+                succeed = ">0"
+                roll = 1
+                effect = true
+
+                [moves.lore]
+                description = "Knows the history of the world"
+
+                [moves.zap]
+                description = """
+                3d6 Blast (15 AP)
+                Shoots energy out of hands.
+                """
+
+                [[notes]]
+                note = """
+                Social Limitation: Police Warrant (Hunted by the Police)
+
+                Frequently, More powerful, NCI,
+                limited geographical area, imprison)
+                """
+                '''
+            ),
+        )
+        assert_that(
+            some_char._repr_html_(),
+            string_contains_in_order("history", "3d6", "Hunted"),
+        )
