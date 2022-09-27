@@ -101,7 +101,7 @@ class TestCharacter(unittest.TestCase):
                 '''\
                 [general]
                 name = "Example Character"
-                
+
                 [moves.default]
                 succeed = ">0"
                 roll = 1
@@ -119,7 +119,7 @@ class TestCharacter(unittest.TestCase):
                 [[notes]]
                 note = """
                 Social Limitation: Police Warrant (Hunted by the Police)
-                
+
                 Frequently, More powerful, NCI,
                 limited geographical area, imprison)
                 """
