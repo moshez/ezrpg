@@ -22,6 +22,7 @@ def _from_move_data(dice_maker: Callable, move: Dict[str, Any]) -> character.Mov
     bonus_effect = move.get("bonus_effect", [])
     return character.Move(
         name=move["name"],
+        description=move.get("description", ""),
         threshold=character.Threshold(
             threshold_dice=dice_maker(move["roll"]),
             maximum=maximum,
@@ -65,6 +66,11 @@ def from_toml(dice_maker: Callable, toml_data: str) -> character.Character:
     """
     data = toml.loads(toml_data)
     moves = data.setdefault("moves", {})
+    notes = [
+        note_content.strip()
+        for note in data.get("notes", {})
+        if (note_content := note.get("note")) is not None
+    ]
     default = moves.pop("default", {})
     for name, a_move in moves.items():
         missing = set(default.keys()) - set(a_move.keys())
@@ -72,6 +78,7 @@ def from_toml(dice_maker: Callable, toml_data: str) -> character.Character:
         a_move["name"] = name
     return character.Character(
         name=data["general"].pop("name"),
+        notes=notes,
         traits=data["general"],
         moves=character.moves(
             *map(functools.partial(_from_move_data, dice_maker), moves.values())
