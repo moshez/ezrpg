@@ -132,7 +132,7 @@ class Character:
     """
 
     name: str
-    notes: Mapping[str, str] = attrs.field(factory=dict)
+    notes: Sequence[str] = attrs.field(factory=list)
     _moves: MoveCollection = attrs.field(factory=_empty_move_collection)
     traits: Mapping[str, int] = attrs.field(factory=dict)
 
