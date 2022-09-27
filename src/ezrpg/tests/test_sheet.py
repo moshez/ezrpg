@@ -126,5 +126,7 @@ class TestCharacter(unittest.TestCase):
                 '''
             ),
         )
-        assert_that(some_char._repr_html_(),
-                    string_contains_in_order("history", "3d6", "Hunted"))
+        assert_that(
+            some_char._repr_html_(),
+            string_contains_in_order("history", "3d6", "Hunted"),
+        )
